@@ -1,0 +1,44 @@
+# Force HTTPS (comment out for local dev)
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteCond %{HTTP_HOST} !^localhost [NC]
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Security Headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    Header set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+</IfModule>
+
+# Disable directory listing
+Options -Indexes
+
+# GZIP Compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/css application/json application/javascript
+</IfModule>
+
+# Browser caching
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+</IfModule>
+
+# Clean URLs (optional - uncomment to enable)
+# RewriteRule ^shop/([a-z]+)/?$ shop.php?cat=$1 [L,QSA]
+# RewriteRule ^product/([a-z0-9-]+)/?$ product.php?slug=$1 [L,QSA]
+# RewriteRule ^about/?$ about.php [L]
+# RewriteRule ^contact/?$ contact.php [L]
+# RewriteRule ^blog/?$ blog.php [L]
+# RewriteRule ^cart/?$ cart.php [L]
+# RewriteRule ^login/?$ login.php [L]
+# RewriteRule ^register/?$ register.php [L]
